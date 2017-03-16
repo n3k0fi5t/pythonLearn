@@ -26,6 +26,10 @@ def abundant_f(argu1=0 ,argu2=0):
 
 def decoratorwithargument(arg1,arg2):
   def wrap(func):
+    '''
+    Can see it appear at first,
+    because python interpeter call it at decoration time
+    '''
     print 'Inside wrap'
     print 'arg1 : %r'%arg1,'arg2 : %r'%arg2
     def wrapper(*arg,**karg):
@@ -39,5 +43,4 @@ def a(b,c):
 
 if __name__ == '__main__':
   print f(1,3),'\n',f(2,5)
-  print '\n'
-  print a(3,1)
+  print a(30,11)
