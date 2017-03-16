@@ -21,5 +21,23 @@ def testing(func):
 def f(start,end):
   return end-start
 
+def abundant_f(argu1=0 ,argu2=0):
+  return 3.14
+
+def decoratorwithargument(arg1,arg2):
+  def wrap(func):
+    print 'Inside wrap'
+    print 'arg1 : %r'%arg1,'arg2 : %r'%arg2
+    def wrapper(*arg,**karg):
+      res = func(*arg,**karg)
+      return res
+    return wrapper
+  return wrap
+@decoratorwithargument(100,152)
+def a(b,c):
+  return b-c
+
 if __name__ == '__main__':
   print f(1,3),'\n',f(2,5)
+  print '\n'
+  print a(3,1)
