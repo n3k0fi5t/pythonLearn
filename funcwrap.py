@@ -8,12 +8,11 @@ import time
 wrap the function into testing function
 '''
 def testing(func):
+  #Using Decorators
   def wrapper(*arg,**karg):
-    print 'start'
     t1 = time.time()
     result = func(*arg,**karg)
     t2 = time.time()
-    print 'end'
     print '%s took %0.3f ms' % (func.func_name, (t2-t1)*1000.0)
     return result
   return wrapper
@@ -23,4 +22,4 @@ def f(start,end):
   return end-start
 
 if __name__ == '__main__':
-  print f(1,3)
+  print f(1,3),'\n',f(2,5)
