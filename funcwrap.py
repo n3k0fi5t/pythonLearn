@@ -21,9 +21,6 @@ def testing(func):
 def f(start,end):
   return end-start
 
-def abundant_f(argu1=0 ,argu2=0):
-  return 3.14
-
 def decoratorwithargument(arg1,arg2):
   def wrap(func):
     '''
