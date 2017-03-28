@@ -247,11 +247,3 @@ if __name__ == '__main__':
             for subitem in item:
                 print subitem
 
-
-
-
-
-
-
-
-
