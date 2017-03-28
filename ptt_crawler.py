@@ -9,50 +9,51 @@ import threading
 import Queue
 import types
 import copy as cp
+from ptt_get_all_board import get_all_board
 
-LOOP = 50
+LOOP = 1
 
 def check_over18(url):
 
     res = requests.get(url)
     code = BeautifulSoup(res.text, "html.parser")
 
-    if len(code.select('.over18-notice'))!=0:
-        payload={
+    if len(code.select('.over18-notice')) != 0:
+        payload = {
             'from':url[18:],
             'yes':'yes'
             }
-        rs=requests.session()
-        res=rs.post('https://www.ptt.cc/ask/over18',data=payload)
-        res=rs.get(url)
+        rs = requests.session()
+        res = rs.post('https://www.ptt.cc/ask/over18',data=payload)
+        res = rs.get(url)
         return rs
     else:
         return requests.session()
 
 def get_pusher(url,rs,target):
   #intialzie list
-  pushlist=[]
+  pushlist = []
 
-  res=rs.get(url)
-  code=BeautifulSoup(res.text, "html.parser")
+  res = rs.get(url)
+  code = BeautifulSoup(res.text, "html.parser")
 
   print '     Search :%s'%url
   for item in code.find_all('div',attrs={'class':'push'}):
-    pusher=item.find('span','f3 hl push-userid')
+    pusher = item.find('span','f3 hl push-userid')
 
-    if pusher!=None and pusher.text==target:
-      content=item.find('span','f3 push-content')
-      tag=item.find('span','f1 hl push-tag')
-      datetime=item.find('span','push-ipdatetime')
-      if tag==None:
-        tag=item.find('span','hl push-tag')
+    if pusher != None and pusher.text == target:
+      content = item.find('span','f3 push-content')
+      tag = item.find('span','f1 hl push-tag')
+      datetime = item.find('span','push-ipdatetime')
+      if tag == None:
+        tag = item.find('span','hl push-tag')
 
       print '        ',tag.text,pusher.text,content.text,datetime.text
-      pushlist.append(tag.text+pusher.text+content.text+datetime.text)
+      pushlist.append(tag.text + pusher.text + content.text + datetime.text)
 
   #add url to end of pushlist
-  if len(pushlist)!=0:
-    pushlist[len(pushlist)-1]+='\n     Url:%s\n\n'%url
+  if len(pushlist) != 0:
+    pushlist[len(pushlist)-1] += '\n     Url:%s\n\n' % url
   return pushlist
 
 def get_essayinfo(*arg):
@@ -110,10 +111,10 @@ def get_board_url(code, tag):
   #    next url
   #    lateist url
   for item in code.select('.btn-group.btn-group-paging'):
-    mlist=re.findall('/bbs/%s/index.+(?:html)'%tag,str(item))
+    mlist = re.findall('/bbs/%s/index.+(?:html)'%tag,str(item))
     if mlist:
       for i in range(len(mlist)):
-        mlist[i]='https://www.ptt.cc'+mlist[i]
+        mlist[i] = 'https://www.ptt.cc' + mlist[i]
         #print mlist[i]
       return mlist
   return []
@@ -122,7 +123,7 @@ def get_essay_list(target, result, idx, tag='Gossiping', mode = 1):
     global LOOP
 
     #the latest index of the board
-    indexUrl = 'https://www.ptt.cc/bbs/%s/index.html'%tag
+    indexUrl = 'https://www.ptt.cc/bbs/%s/index.html' % tag
     tarlist = []
 
     #cond: true for continue search
@@ -149,7 +150,7 @@ def get_essay_list(target, result, idx, tag='Gossiping', mode = 1):
                 continue
 
             #Using regular expression to get url
-            m = re.search('/bbs/%s/.+(?:html)'%tag,str(item.select('.title')[0]))
+            m = re.search('/bbs/%s/.+(?:html)' % tag,str(item.select('.title')[0]))
             if m :
                 url = 'https://www.ptt.cc' + m.group()
                 urlist.append(url)
@@ -160,10 +161,10 @@ def get_essay_list(target, result, idx, tag='Gossiping', mode = 1):
                     essayinfo = get_essayinfo(url,rs)
                     print_essay(essayinfo)
                     tarlist.append(essayinfo)
-        
-        #get next index page url                    
+
+        #get next index page url
         bdurlist = get_board_url(code, tag)
-        if len(bdurlist)==0:
+        if len(bdurlist) == 0:
             print code.text
             #sleep(0.3)
             continue
@@ -208,15 +209,17 @@ class Ptt_crawler():
   def start(self):
     if len(self.threads) == 0:
         #creat empty list with same size as target number
+        #creat mutable object to save result
         self.result = [[] for i in range(len(self.target_board))]
         for idx, name in enumerate(self.target_board):
             thread = Ptt_thread(arg=(get_essay_list,self.target_id , self.result, idx,name , self.mode))
+            thread.daemon = True
             self.threads.append(thread)
     for thread in self.threads:
         thread.start()
         print 'Thread[%d] start'%thread.ident
-        
-  
+
+
   def isrunning(self):
     if len(self.threads) == 0:
         return True
@@ -227,16 +230,17 @@ class Ptt_crawler():
   def get_result(self):
     if self.isrunning():
         return self.result
-    print 'thread don\'t finished., please wait.' 
+    print 'thread don\'t finished., please wait.'
     while not self.isrunning():
         continue
     return self.result
-  
+
 
 
 if __name__ == '__main__':
-
-    crawler = Ptt_crawler([['Gossiping', 'sex', 'Grad-ProbAsk', 'graduate'], 'prosperous', 1])
+    board =[val[0] for val in get_all_board(20)]
+    #crawler = Ptt_crawler([['Gossiping', 'sex', 'Grad-ProbAsk', 'graduate'], 'jopurin', 1])
+    crawler = Ptt_crawler([board, 'prosperous', 1])
     crawler.start()
     for item in crawler.get_result():
         if len(item) != 0:

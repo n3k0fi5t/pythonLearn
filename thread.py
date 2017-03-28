@@ -22,13 +22,13 @@ class Mythread(threading.Thread):
   def run(self):
     self.func()
 
-def count_down():
+def count_down(s):
   global Q
   t = 0
   if not Q.empty():
     t = Q.get()
   for i in range(t):
-    print 'wait %d sec'%(t-i)
+    print 'wait %d sec'%(t-i),s
     time.sleep(1)
 
 def main():
@@ -38,13 +38,17 @@ def main():
   map(Q.put,task)
 
   for i in range(THREAD_NUM):
-    thread = Mythread(count_down)
-    threads.append(thread)
-  for thread in threads:
-    thread.start()
+    run_event = threading.Event()
+    run_event.set()
 
+    thread = Mythread(target=count_down)
+    threads.append(thread)
+    thread.start()
+  for thread in threads:
+    print 'Thread %d start join' %(thread.ident)
+    thread.join()
     #block main thread until wait 1.5s or empty for thread terminate
-    thread.join(1.5)
+   # thread.join(1.5)
 
 if __name__ == '__main__':
   main()
