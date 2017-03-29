@@ -11,7 +11,7 @@ import types
 import copy as cp
 from ptt_get_all_board import get_all_board
 
-LOOP = 1
+LOOP = 30
 
 def check_over18(url):
 
@@ -119,9 +119,13 @@ def get_board_url(code, tag):
       return mlist
   return []
 
-def get_essay_list(target, result, idx, tag='Gossiping', mode = 1):
+def get_essay_list(*arg):
     global LOOP
 
+    if len(arg) < 5:
+        print len(arg)
+        return
+    target, result, idx, tag, mode = arg
     #the latest index of the board
     indexUrl = 'https://www.ptt.cc/bbs/%s/index.html' % tag
     tarlist = []
@@ -182,15 +186,16 @@ def get_essay_list(target, result, idx, tag='Gossiping', mode = 1):
 
     result[idx] = cp.deepcopy(tarlist)
 
-
 class Ptt_thread(threading.Thread):
     """docstring for Ptt_thread"""
     def __init__(self, arg):
         super(Ptt_thread,self).__init__()
         self.func = arg[0]
         self.paras = arg[1:]
+
     def run(self):
-        self.func(self.paras[0],self.paras[1],self.paras[2],self.paras[3],self.paras[4])
+        self.func(*self.paras)
+
     def restart(self, func):
         self.func = func
         self.run()
@@ -219,7 +224,6 @@ class Ptt_crawler():
         thread.start()
         print 'Thread[%d] start'%thread.ident
 
-
   def isrunning(self):
     if len(self.threads) == 0:
         return True
@@ -227,6 +231,7 @@ class Ptt_crawler():
         if thread.isAlive():
             return False
     return True
+
   def get_result(self):
     if self.isrunning():
         return self.result
@@ -235,10 +240,8 @@ class Ptt_crawler():
         continue
     return self.result
 
-
-
 if __name__ == '__main__':
-    board =[val[0] for val in get_all_board(20)]
+    board =[val[0] for val in get_all_board(5)]
     #crawler = Ptt_crawler([['Gossiping', 'sex', 'Grad-ProbAsk', 'graduate'], 'jopurin', 1])
     crawler = Ptt_crawler([board, 'prosperous', 1])
     crawler.start()

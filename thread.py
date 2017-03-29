@@ -16,19 +16,20 @@ class Mythread(threading.Thread):
   """docstring for Mythread"""
   def __init__(self, arg):
     super(Mythread, self).__init__()
-    self.func = arg
+    self.func = arg[0]
+    self.arg = arg
 
   #run self task
   def run(self):
-    self.func()
+      self.func(self.arg[1:])
 
-def count_down(s):
+def count_down(*arg):
   global Q
   t = 0
   if not Q.empty():
     t = Q.get()
   for i in range(t):
-    print 'wait %d sec'%(t-i),s
+    print 'wait %d sec'%(t-i),arg
     time.sleep(1)
 
 def main():
@@ -41,12 +42,15 @@ def main():
     run_event = threading.Event()
     run_event.set()
 
-    thread = Mythread(target=count_down)
+    thread = Mythread(arg=(count_down,1.5,2))
     threads.append(thread)
     thread.start()
   for thread in threads:
-    print 'Thread %d start join' %(thread.ident)
+    print 'Thread % d start join' %(thread.ident)
     thread.join()
+
+  for thread in threads:
+    thread.run()
     #block main thread until wait 1.5s or empty for thread terminate
    # thread.join(1.5)
 
