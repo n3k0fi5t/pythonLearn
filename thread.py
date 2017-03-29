@@ -17,11 +17,11 @@ class Mythread(threading.Thread):
   def __init__(self, arg):
     super(Mythread, self).__init__()
     self.func = arg[0]
-    self.arg = arg
+    self.arg = arg[1:]
 
   #run self task
   def run(self):
-      self.func(self.arg[1:])
+      self.func(*self.arg)
 
 def count_down(*arg):
   global Q
@@ -44,12 +44,15 @@ def main():
 
     thread = Mythread(arg=(count_down,1.5,2))
     threads.append(thread)
+    thread.daemon = True
     thread.start()
+
   for thread in threads:
     print 'Thread % d start join' %(thread.ident)
     thread.join()
 
   for thread in threads:
+    print thread.ident
     thread.run()
     #block main thread until wait 1.5s or empty for thread terminate
    # thread.join(1.5)
