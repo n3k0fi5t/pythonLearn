@@ -122,7 +122,7 @@ def get_board_url(code, tag):
 def get_essay_list(*arg):
     global LOOP
 
-    if len(arg) < 5:
+    if len(arg) != 5:
         print len(arg)
         return
     target, result, idx, tag, mode = arg

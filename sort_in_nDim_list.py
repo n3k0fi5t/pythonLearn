@@ -11,12 +11,21 @@ print target
 print res
 
 
-target = {idx:random.randint(1,50) for idx in range(30)}
 
-res = sorted(target.iteritems(), key=lambda (k,v): (v,k))
+"""
+iteritems() will return each item of dictionary with tuple type
+d = {'a':1,'b':2}
+iteritems() = iterable generator which contain ('a',1), ('b',2)
+"""
+target = {chr(idx+90):random.randint(1,50) for idx in range(30)}
+
+res = sorted(target.iteritems(), key=lambda (k,v): [v,k])#makes tuple to list
 
 print target
+print
 print res
 
-for idx,v, in target.iteritems():
-    print idx,v
+res = sorted([[k,v] for (k,v) in target.iteritems()],key = lambda x:x[1])
+
+print
+print res
