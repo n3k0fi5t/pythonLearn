@@ -28,8 +28,9 @@ class ProgressBar(object):
         self.bar = self.fill * filled + ('>' if filled < self.barlength else '') + self.unfill * (self.barlength - filled - 1)
         return ('\r{0} [{1}]{2}% {3}').format(self.prefix, self.bar, self.per, self.suffix)
 
-    def update(self,idx):
-        self.iteration = idx
+    def update(self,idx=None):
+        if idx is not None:
+            self.iteration = idx
         stdout.write(self.progressBar())
         stdout.flush()
         self.isFinished()
@@ -46,7 +47,7 @@ pb = ProgressBar(leng, prefix='Progress:', suffix='complete', barlength=50,fill=
 for idx,val in enumerate(l,1):
     sleep(0.05)
     pb.update(idx)
-pb = ProgressBar(leng,barlength = 20)
+pb = ProgressBar(leng,barlength = 20, iteration=0)
 for idx,val in enumerate(l,1):
     sleep(0.05)
     pb.update(idx)
