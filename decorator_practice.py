@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 def c(a,b):
-  return a+b
+    return a*b
 
 def decoratorf(func):
   def wrapper(f):
@@ -18,4 +18,4 @@ def y(*arg):
   return reduce(lambda x,y:x+y,arg)
 
 if __name__ == '__main__':
-  print y(1,2)
+  print y(3,10)
