@@ -3,12 +3,15 @@
 
 import time
 
+from functools import wraps
+
 '''
 @ is used to test or log something so that u won't rewrite the same function again
 wrap the function into testing function
 '''
 def testing(func):
   #Using Decorators
+  @wraps(func)
   def wrapper(*arg,**karg):
     t1 = time.time()
     result = func(*arg,**karg)
@@ -19,6 +22,7 @@ def testing(func):
 
 @testing
 def f(start,end):
+  """the doc of f """
   return end-start
 
 def decoratorwithargument(arg1,arg2):
@@ -29,6 +33,8 @@ def decoratorwithargument(arg1,arg2):
     '''
     print 'Inside wrap'
     print 'arg1 : %r'%arg1,'arg2 : %r'%arg2
+
+    @wraps(func)
     def wrapper(*arg,**karg):
       res = func(*arg,**karg)
       return res
@@ -36,9 +42,12 @@ def decoratorwithargument(arg1,arg2):
   return wrap
 @decoratorwithargument(100,152)
 def a(b,c):
+  """the doc of a """
   return b-c
 
 if __name__ == '__main__':
   print f(1,3),'\n',f(2,5)
   print a(30,11)
+  print f.__name__,f.__doc__
+  print a.__name__,a.__doc__
 
