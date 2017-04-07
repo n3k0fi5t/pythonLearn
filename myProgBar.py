@@ -7,7 +7,7 @@ from sys import stdout
 class ProgressBar(object):
     """docstring for ProgressBar"""
     def __init__(self, count, iteration=0,
-                prefix = '', suffix = '', accuracy=1, barlength=100,fill='=',unfill='-'):
+                prefix = '', suffix = '', accuracy=1, barlength=100, fill='=', unfill='-'):
         super(ProgressBar, self).__init__()
         self.iteration = iteration
         self.count = count
@@ -43,11 +43,11 @@ class ProgressBar(object):
 
 l = [i for i in xrange(30)]
 leng = len(l)
-pb = ProgressBar(leng, prefix='Progress:', suffix='complete', barlength=50,fill='=',unfill='-', accuracy=2)
+pb = ProgressBar(leng, prefix='Progress:', suffix='complete', barlength=50, fill='=', unfill='-', accuracy=2)
 for idx,val in enumerate(l,1):
     sleep(0.05)
     pb.update(idx)
-pb = ProgressBar(leng,barlength = 20, iteration=0)
+pb = ProgressBar(leng,barlength = 35, iteration=0, fill='#', unfill=' ')
 for idx,val in enumerate(l,1):
     sleep(0.05)
     pb.update(idx)
