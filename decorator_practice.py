@@ -16,6 +16,7 @@ def decoratorf(func):
     return wrap
   return wrapper
 
+#y = decoratorf(c)(y)
 @decoratorf(c)
 def y(*arg):
   return reduce(lambda x,y:x+y,arg)

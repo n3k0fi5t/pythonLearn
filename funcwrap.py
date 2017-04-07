@@ -8,6 +8,14 @@ from functools import wraps
 '''
 @ is used to test or log something so that u won't rewrite the same function again
 wrap the function into testing function
+
+@decorator
+def func():
+    ...
+
+will be interpreter to below
+func = decorator(func)
+
 '''
 def testing(func):
   #Using Decorators
