@@ -14,10 +14,17 @@ from ptt_get_all_board import get_all_board
 LOOP = 30
 
 def check_over18(url):
-
-    res = requests.get(url)
+    rs = requests.session()
+    res = rs.get(url)
     code = BeautifulSoup(res.text, "html.parser")
-
+    payload = {
+        'from':url[18:],
+        'yes':'yes'
+        }
+    res = rs.post('https://www.ptt.cc/ask/over18',data=payload)
+    res = rs.get(url)
+    return rs
+    """
     if len(code.select('.over18-notice')) != 0:
         payload = {
             'from':url[18:],
@@ -29,6 +36,7 @@ def check_over18(url):
         return rs
     else:
         return requests.session()
+    """
 
 def get_pusher(url,rs,target):
   #intialzie list
@@ -241,9 +249,9 @@ class Ptt_crawler():
     return self.result
 
 if __name__ == '__main__':
-    board =[val[0] for val in get_all_board(5)]
+    board =[val[0] for val in get_all_board(10)]
     #crawler = Ptt_crawler([['Gossiping', 'sex', 'Grad-ProbAsk', 'graduate'], 'jopurin', 1])
-    crawler = Ptt_crawler([board, 'prosperous', 1])
+    crawler = Ptt_crawler([board, 'wuyiulin', 1])
     crawler.start()
     for item in crawler.get_result():
         if len(item) != 0:
