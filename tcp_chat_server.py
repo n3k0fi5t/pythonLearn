@@ -121,8 +121,6 @@ print("Listening ...")
 
 #creat condition for shared buffer
 Cond = threading.Condition()
-#creat thread condtion for thread_list
-tcond = threading.Condition()
 
 #creat a thread to broadcast new message to others
 print("Creat thread for broadcasting ...")
