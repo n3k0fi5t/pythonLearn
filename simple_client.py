@@ -40,15 +40,6 @@ def main():
       sys.exit(1)
     try:
       s.connect((host,port))
-      # mhost, mport = s.getsockname()
-      # #
-      # msock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-      # print("Set socket option ...")
-      # msock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-      # print("Binding to host {} port {}".format(mhost, mport))
-      # msock.bind((mhost, mport))
-      # msock.listen(1)
-      # print("Listening ...")
       thread=threading.Thread(target = handleThread,
                                args = (s,cond), name="")
       #set the thread could be killed at the same time when parent thread was killed
@@ -69,7 +60,9 @@ def main():
         try:
           s.sendto(cmd, (host,port))
         except (socket.error,socket.gaierror), e:
-          print("Error sending data %s"% e)
+          #print("Error sending data %s"% e)
+          print("Server offline")
+          sys.exit(-1)
 
 if __name__=='__main__':
   main()
