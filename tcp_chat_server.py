@@ -49,6 +49,8 @@ class chat_client_handler(threading.Thread):
                 self.condition.acquire()
                 print("\nGot message :{:<50}, from {}".format(buf, self.client.getpeername()))
                 self.item.setmsg(self.client.getpeername(), buf)
+                #notify the broadcasting thread
+                self.condition.notify()
                 self.condition.release()
                 self.print_last = True
 
@@ -82,11 +84,11 @@ def boradcast_handler(cond, thread_list, shared_buf, mode=1):
     while(1):
         #get msg
         cond.acquire()
+        #wait the client sent the msg and be notified by another thread
+        #wait() will release the lock, i.e., not acquire lock
+        cond.wait()
         (name, msg) = shared_buf.getmsg()
         cond.release()
-
-        if name is None or msg is None:
-            continue
 
         for thd in thread_list:
             #if thd.isAlive():
