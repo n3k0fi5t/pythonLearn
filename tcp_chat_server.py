@@ -60,7 +60,7 @@ class chat_client_handler(threading.Thread):
             except socket.error, e:
                 print("Error sending data %s"% e)
                 print("Detroy thread: {}".format(self.name))
-                sys.exit(-1)
+                self.exit()
             print("{} handling recv data finish\n".format(self.name))
 
 def get_min_thread_name(thread_list):
@@ -146,18 +146,24 @@ while(1):
         print("face error!!")
         sys.exit(-1)
     idx = get_min_thread_name(thread_list)
-    thdname = "thread-{}".format(idx)
-    thd = chat_client_handler(clientsock, Cond, shared_buf, clientsock.getpeername())
-    thd.setName(thdname)
-    thd.setDaemon(1)
-    thd.start()
+    print("find index %d"%idx)
 
     if idx >= len(thread_list):
+        thdname = "thread-{}".format(idx)
+        thd = chat_client_handler(clientsock, Cond, shared_buf, clientsock.getpeername())
+        thd.setName(thdname)
+        thd.setDaemon(1)
+        thd.start()
         thread_list.append(thd)
+        print("Creat {:<20} to handle connection {:<30}".format(thdname, clientsock.getpeername()))
     else:
-        thread_list[idx] = thd
-    print("Creat {:<20} to handle connection {:<30}".format(thdname, clientsock.getpeername()))
-    print("thread_pool size: {}".format(get_threadPool_available(thread_list)))
+        thd = thread_list[idx]
+        print("Using exist {:<20} to handle connection {:<30}".format(thd.name, clientsock.getpeername()))
+        thd.__init__(clientsock, Cond, shared_buf, clientsock.getpeername())
+        thd.setDaemon(1)
+        thd.start()
+    print("Service thread pool size: {}".format(get_threadPool_available(thread_list)))
+    print("Active thread :",threading.activeCount())
 
 
 
