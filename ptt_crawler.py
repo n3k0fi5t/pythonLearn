@@ -3,7 +3,7 @@
 from bs4 import BeautifulSoup
 import requests
 import re
-from sys import argv
+from sys import argv, exit
 from time import sleep
 import threading
 import Queue
@@ -203,6 +203,7 @@ class Ptt_thread(threading.Thread):
 
     def run(self):
         self.func(*self.paras)
+        exit()
 
     def restart(self, func):
         self.func = func
@@ -249,7 +250,7 @@ class Ptt_crawler():
     return self.result
 
 if __name__ == '__main__':
-    board =[val[0] for val in get_all_board(10)]
+    board =[val[0] for val in get_all_board(5)]
     #crawler = Ptt_crawler([['Gossiping', 'sex', 'Grad-ProbAsk', 'graduate'], 'jopurin', 1])
     crawler = Ptt_crawler([board, 'wuyiulin', 1])
     crawler.start()
