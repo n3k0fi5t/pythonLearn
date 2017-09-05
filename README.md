@@ -41,7 +41,7 @@ to update functions in the module scope
 ## projects
 ### tcp
 [server](https://github.com/n3k0fi5t/pythonLearn/blob/master/tcp_chat_server.py)
-A chat server using limited threads which are dynamic assigned for each client, and a thread
+- A chat server using limited threads which are dynamic assigned for each client, and a thread
 to listen the connection.
 
 [client](https://github.com/n3k0fi5t/pythonLearn/blob/master/simple_client.py)
