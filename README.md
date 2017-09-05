@@ -4,9 +4,14 @@
 
 ---
 [Some small projects](#projects)
+1. [chat server and client](#tcp)
+
+2. [ptt crawler](# crawler)
 
 ## projects
-1. [chat server](https://github.com/n3k0fi5t/pythonLearn/blob/master/tcp_chat_server.py)
-and correspond [client](https://github.com/n3k0fi5t/pythonLearn/blob/master/simple_client.py)
+### tcp
+[server](https://github.com/n3k0fi5t/pythonLearn/blob/master/tcp_chat_server.py)
+[client](https://github.com/n3k0fi5t/pythonLearn/blob/master/simple_client.py)
 
-2. [ptt_crawler](https://github.com/n3k0fi5t/pythonLearn/blob/master/ptt_crawler.py)
+### crawler
+[ptt_crawler](https://github.com/n3k0fi5t/pythonLearn/blob/master/ptt_crawler.py)
