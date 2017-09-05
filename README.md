@@ -12,12 +12,31 @@
 
 ## technique
 [misc](https://github.com/n3k0fi5t/pythonLearn/tree/master/misc)
+```
+misc thing in this folder
+```
 
 [decorator](https://github.com/n3k0fi5t/pythonLearn/tree/master/decorator)
+```
+runtime and runtime limitation decorator
+```
 
 [progressor bar](https://github.com/n3k0fi5t/pythonLearn/tree/master/progressor_bar)
+```
+As title, is the progressor bar
+```
 
 [global_updater](https://github.com/n3k0fi5t/pythonLearn/tree/master/global_updater)
+```
+make module in other folder could be include in main
+and using
+```py
+globals()
+``` to update functions in this module scope
+```
+
+
+---
 
 ## projects
 ### tcp
