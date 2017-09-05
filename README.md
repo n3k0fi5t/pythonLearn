@@ -2,6 +2,7 @@
 # this is the repo record what I had learned in python
 - when I learned something, I will update this repo
 
+<img src="https://i.imgur.com/2tStxFL.jpg" width="50%" height="50%">
 ![image](https://i.imgur.com/2tStxFL.jpg "umaru")
 
 ---
