@@ -2,7 +2,7 @@
 # this is the repo record what I had learned in python
 - when I learned something, I will update this repo
 
-![GITHUB](https://i.imgur.com/2tStxFL.jpg umaru)
+![image](https://i.imgur.com/2tStxFL.jpg "umaru")
 
 ---
 - [**Some small projects**](#projects)
