@@ -4,9 +4,20 @@
 
 ---
 [Some small projects](#projects)
-1. [chat server and client](#tcp)
+    1. [chat server and client](#tcp)
 
-2. [ptt crawler](#crawler)
+    2. [ptt crawler](#crawler)
+
+[technique](#technique)
+
+## technique
+[misc](https://github.com/n3k0fi5t/pythonLearn/tree/master/misc)
+
+[decorator](https://github.com/n3k0fi5t/pythonLearn/tree/master/decorator)
+
+[progressor bar](https://github.com/n3k0fi5t/pythonLearn/tree/master/progressor_bar)
+
+[global_updater](https://github.com/n3k0fi5t/pythonLearn/tree/master/global_updater)
 
 ## projects
 ### tcp
