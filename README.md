@@ -30,7 +30,7 @@
 ```python
 globals().update()
 ```
-    to update functions in the module scope
+to update functions in the module scope
 
 
 
