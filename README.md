@@ -2,11 +2,13 @@
 # this is the repo record what I had learned in python
 - when I learned something, I will update this repo
 
+
 ---
 - [**Some small projects**](#projects)
 > 1. [chat server and client](#tcp)
 
 > 2. [ptt crawler](#crawler)
+
 
 - [**technique**](#technique)
 
@@ -16,15 +18,18 @@
 misc thing in this folder
 ```
 
+
 [decorator](https://github.com/n3k0fi5t/pythonLearn/tree/master/decorator)
 ```
 runtime and runtime limitation decorator
 ```
 
+
 [progressor bar](https://github.com/n3k0fi5t/pythonLearn/tree/master/progressor_bar)
 ```
 As title, is the progressor bar
 ```
+
 
 [global_updater](https://github.com/n3k0fi5t/pythonLearn/tree/master/global_updater)
 ```
