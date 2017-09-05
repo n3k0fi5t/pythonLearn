@@ -40,7 +40,6 @@ to update functions in the module scope
 
 ## projects
 ### tcp
-![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/chat2.png)
 [server](https://github.com/n3k0fi5t/pythonLearn/blob/master/tcp_chat_server.py)
 A chat server using limited threads which are dynamic assigned for each client, and a thread
 to listen the connection.
@@ -48,9 +47,12 @@ to listen the connection.
 [client](https://github.com/n3k0fi5t/pythonLearn/blob/master/simple_client.py)
 - A chat client using two thread. one of threads is used to handle sending connection between server and the client, another is used for receiving.
 
+![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/chat2.png)
+
+
 ### crawler
-![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/crawler.png)
 [ptt_crawler](https://github.com/n3k0fi5t/pythonLearn/blob/master/ptt_crawler.py)
+![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/crawler.png)
 - A ptt crawler crawle the web side ptt context.
 Functionality:
   crawle a specify account push comments in hot topics/given topic
