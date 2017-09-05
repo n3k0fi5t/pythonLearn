@@ -2,10 +2,10 @@
 # this is the repo record what I had learned in python
 - when I learned something, I will update this repo
 
-![GITHUB](https://kingofamani.gitbooks.io/git-teach/content/assets/dojocat.jpg "git image")
-
 ---
-Some small projects:
+[Some small projects](#projects)
+
+## projects
 1. [chat server](https://github.com/n3k0fi5t/pythonLearn/blob/master/tcp_chat_server.py)
 and correspond [client](https://github.com/n3k0fi5t/pythonLearn/blob/master/simple_client.py)
 
