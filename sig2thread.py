@@ -42,7 +42,7 @@ if __name__ == '__main__':
     simpleThread.start()
     SimpleThread()()
 
-    alarm(10)
+    alarm(5)
     while(1):
         pass
 
