@@ -4,9 +4,9 @@
 
 ---
 [Some small projects](#projects)
-    1. [chat server and client](#tcp)
+> 1. [chat server and client](#tcp)
 
-    2. [ptt crawler](#crawler)
+> 2. [ptt crawler](#crawler)
 
 [technique](#technique)
 
