@@ -31,10 +31,10 @@ As title, is the progressor bar
 make module in other folder could be include in main
 and using
 ```
-```python=
-globals()
+```python
+globals().update()
 ```
-`to update functions in this module scope`
+`to update functions in the module scope`
 
 
 
