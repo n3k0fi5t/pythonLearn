@@ -3,12 +3,12 @@
 - when I learned something, I will update this repo
 
 ---
-[Some small projects](#projects)
+- [**Some small projects**](#projects)
 > 1. [chat server and client](#tcp)
 
 > 2. [ptt crawler](#crawler)
 
-[technique](#technique)
+- [**technique**](#technique)
 
 ## technique
 [misc](https://github.com/n3k0fi5t/pythonLearn/tree/master/misc)
