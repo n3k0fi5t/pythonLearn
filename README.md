@@ -1,5 +1,5 @@
 [homepage](https://github.com/n3k0fi5t/)
-# this is the repo record what i had learned in python
+# this is the repo record what I had learned in python
 - when I learned something, I will update this repo
 
 ---
