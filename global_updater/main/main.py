@@ -13,6 +13,7 @@ def set_syspath(ref_list):
             if path.isdir(subpath) and folder in ref_list:
                 sys.path.insert(0, subpath)
                 ref_list.pop(ref_list.index(folder))
+                print("add {} to sys path".format(subpath))
         if not ref_list:
             break
         pathname = path.dirname(pathname)

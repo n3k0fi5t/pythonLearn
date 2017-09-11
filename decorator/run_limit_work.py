@@ -2,7 +2,7 @@
 import threading
 from sys import exit
 def runtime(n):
-    def _async_raise(tid, exctype, thr):
+    def _async_raise(tid, exctype):
         import inspect, ctypes
         if not inspect.isclass(exctype):
             raise TypeError("Only types can be raised (not instances)")
@@ -31,7 +31,7 @@ def runtime(n):
             self.res = self.f(*self.args, **self.kargs)
 
         def terminate(self):
-            _async_raise(self._get_tid(), SystemExit, self)
+            _async_raise(self._get_tid(), SystemExit)
 
         def _get_tid(self):
             if not self.isAlive():
