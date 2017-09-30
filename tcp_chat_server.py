@@ -31,15 +31,15 @@ class chat_client_handler(threading.Thread):
     def run(self):
         while(1):
             try:
-                buf = self.client.recv(2048)
+                buf = self.client.recv(2147483647)
             except :
                 print("Error when receiving data, close {}".format(self.name))
-                print("Detroy thread: {}".format(self.name))
+                print("Destroy thread: {}".format(self.name))
                 sys.exit(-1)
 
             if not buf:
                 print("Error when receiving data, close {}".format(self.name))
-                print("Detroy thread: {}".format(self.name))
+                print("Destroy thread: {}".format(self.name))
                 sys.exit(-1)
             else:
                 self.print_last = False
@@ -59,7 +59,7 @@ class chat_client_handler(threading.Thread):
                 self.client.sendall("the send ok signal")
             except socket.error, e:
                 print("Error sending data %s"% e)
-                print("Detroy thread: {}".format(self.name))
+                print("Destroy thread: {}".format(self.name))
                 self.exit()
             print("{} handling recv data finish\n".format(self.name))
 
