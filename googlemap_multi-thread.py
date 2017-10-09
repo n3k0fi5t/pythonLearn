@@ -51,7 +51,7 @@ def get_comments(src):
     for (idx,item) in enumerate(code.findAll(attrs={'class':'section-review-text'})):
         # only save valid comment
         if len(item.text) > 0: 
-            cmts.append("    {0}".format(item.text))
+            cmts.append("{0}".format(item.text))
     return cmts
 
 def perform_comment(driver, res, search=True, store_name="", result_name=None):
