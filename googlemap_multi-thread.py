@@ -60,7 +60,12 @@ def perform_comment(driver, res, search=True, store_name="", result_name=None):
 
     print("search... {}\n".format(store_name))
     scroll_down(driver)
-    comments = get_comments(driver.page_source)
+
+    comment_src = driver.page_source
+    # close the driver before parsing the source to save computing resource
+    driver.close()
+
+    comments = get_comments(comment_src)
     res.append({store_name : comments})
 
     with open("{0}.txt".format("search_result" if result_name is None else result_name), mode="a") as fp:
@@ -108,8 +113,6 @@ def crawl_handler(res, idx, search_string):
     sleep(WAIT_INTERVAL)
 
     perform_comment(driver, res, store_name=store_name, result_name="{0}_{1}".format(store_name, idx))
-
-    driver.close()
 
 def main(search_string=SEARCH_STRING):
     res = []
