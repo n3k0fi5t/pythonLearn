@@ -14,8 +14,9 @@ from time import sleep
 
 
 SEARCH_STRING =  "角亭"
-WAIT_INTERVAL = 7
+WAIT_INTERVAL = 5
 SCROLL_PAUSE_TIME = 0.2
+THREAD_LIMIT = 3
 
 XPATH = {
     'store' : "//*[@id='pane']/div/div[2]/div/div/div[1]/div[1]/button[1]",
@@ -58,22 +59,24 @@ def perform_comment(driver, res, search=True, store_name="", result_name=None):
     comment.click()
     sleep(WAIT_INTERVAL)
 
-    print("search... {}\n".format(store_name))
+    print("searching... {}\n".format('  '.join(store_name.split('\n'))))
     scroll_down(driver)
 
     comment_src = driver.page_source
     # close the driver before parsing the source to save computing resource
     driver.close()
+    print("searching {} finished\n".format('  '.join(store_name.split('\n'))))
 
     comments = get_comments(comment_src)
     res.append({store_name : comments})
 
     with open("{0}.txt".format("search_result" if result_name is None else result_name), mode="a") as fp:
         fp.write("###{0}###\n".format(store_name))
-        for c in comments:
-            fp.write("{0}\n".format(c))
+        for (idx, c) in enumerate(comments, 1):
+            c = '\n\t'.join(c.split('\n'))
+            fp.write("{0}.\n\t{1}\n".format(idx, c))
         fp.close()
-
+    
     # try:
     #     back(driver, XPATH['store'])
     # except:
@@ -138,6 +141,8 @@ def main(search_string=SEARCH_STRING):
     sleep(WAIT_INTERVAL)
 
     eles = driver.find_elements_by_class_name("section-result-text-content")
+    driver.close()
+
     for i in range(len(eles)):
         res.append([])
 
@@ -147,7 +152,11 @@ def main(search_string=SEARCH_STRING):
         searchthread.setDaemon(1)
         threads.append(searchthread)
         searchthread.start()
-        print("crawl thread_{0}  start...".format(i))
+        print("crawling thread_{0}  start".format(i))
+
+        # limited total threads
+        while sum([1 if thread.isAlive() else 0 for thread in threads]) >= THREAD_LIMIT:
+            continue
 
 
     if len(eles) == 0 :
@@ -160,11 +169,10 @@ def main(search_string=SEARCH_STRING):
         if comment:
             perform_comment(driver, res, search=False, store_name=search_string, result_name=search_string)
     else :
-        driver.close()
         while sum([1 if thread.isAlive() else 0 for thread in threads]) > 0:
             continue
 
-    print("finished")
+    print("finished crawling")
 
 if __name__ == '__main__':
     if len(argv) > 1:
