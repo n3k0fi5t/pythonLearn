@@ -19,9 +19,9 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-c', '--choice-set', metavar='choices', nargs='*', default='')
 
-parser.add_argument('-r', '-redundant',nargs='?', default='')
+parser.add_argument('-r', '-redundant', nargs='?', default='')
 
-parser.add_argument('defualt',nargs='*', default='')
+parser.add_argument('defualt', nargs='*', default='')
 
 ret = parser.parse_args()
 

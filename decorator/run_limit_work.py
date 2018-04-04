@@ -68,9 +68,10 @@ def testing(char, flag):
     from time import sleep
     if flag:
         cnt = 0
-        while cnt < 10:
-            print("sleeeeep")
+        while cnt < 5:
+            print("sleeeeep", cnt)
             sleep(1)
+            cnt += 1
     print(char)
     return 1
 
