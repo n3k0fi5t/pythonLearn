@@ -113,7 +113,6 @@ def parse_arg():
 
 if __name__ == '__main__':
     args = parse_arg()
-    print(args)
     assert args.name!=None, 'Must has a account name'
     if args.balance is not None:
         assert isnumber(args.balance), "Balance must be a number"

@@ -15,7 +15,7 @@ def retrive_attr(attr_str):
         return attr_str
 args = ['--choice-set', '-redundant', 'defualt']
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(description='learning parser')
 
 parser.add_argument('-c', '--choice-set', metavar='choices', nargs='*', default='')
 
@@ -26,6 +26,6 @@ parser.add_argument('defualt', nargs='*', default='')
 ret = parser.parse_args()
 
 for v in args:
-    print(getattr(ret, retrive_attr(v)))
+    print(retrive_attr(v), getattr(ret, retrive_attr(v)))
 
 print(dir(ret))
