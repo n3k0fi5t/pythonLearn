@@ -14,26 +14,7 @@ class Account(object):
         self._name = name
         self._logname = self._name + '.txt'
         # load balance
-        if self._check_db():
-            with open(self._logname, 'r+') as fp:
-                for line in fp:
-                    pass
-                line = line.split(',')[-2].strip()
-                if isnumber(line):
-                    print("Load account success.")
-                    self._balance = float(line)
-                    print(self._account_info())
-                else:
-                    from sys import exit
-                    print("Load account fail, please remove {0} first.".format(self._logname))
-                    exit(-1)
-
-        else:
-            # create a new account
-            assert isnumber(balance), "Create account fail, balance must be a number"
-            self._balance = float(balance)
-            print("Create account:\n{0}".format(self._account_info()))
-            self._log(3, value=self._name)
+        self._load_balance(balance)
 
     def withdraw(self, value):
         assert value>=0, 'value cannot be less than 0'
@@ -59,21 +40,41 @@ class Account(object):
         if len(data) > 10:
             data = data[-10:]
 
-        """
-        if len(data) >21:
-            data = data[-21:-1:2]
-        else:
-            data = data[::2]
-        """
         for line in data:
             if len(line)< 5:
                 continue
             info = line.split(',')
             print('\t{0:<15} {1:<10} {2:<10} {3}'.format(info[0], info[1], info[2], info[3]))
 
-        #self._log(2)
+        self._log(2)
     def _account_info(self):
         return '\tName   : {0:<15}\n\tBalance: {1}'.format(self._name, self._read_balance())
+
+    def _load_balance(self, balance):
+        if self._check_db():
+            data = self._read_db()
+            while len(data[-1])<4:
+                data = data[:-1]
+            data = data[-1].split(',')
+            if len(data) > 3:
+                line = data[-2].strip()
+
+                if isnumber(line):
+                    print("Load account success.")
+                    self._balance = float(line)
+                    print(self._account_info())
+
+            if not hasattr(self, '_balance'):
+                from sys import exit
+                print("Load account fail, please remove {0} first.".format(self._logname))
+                exit(-1)
+
+        else:
+            # create a new account
+            assert isnumber(balance), "Create account fail, balance must be a number"
+            self._balance = float(balance)
+            print("Create account:\n{0}".format(self._account_info()))
+            self._log(3, value=self._name)
 
     def _read_balance(self):
         return self._balance
@@ -81,7 +82,7 @@ class Account(object):
     def _read_db(self):
         if self._check_db():
             with open(self._logname, 'r+') as fp:
-                return fp.read().split('\n')
+                return fp.read().split('\n')[:-1]
 
     def _check_db(self):
         import os.path as op
@@ -96,13 +97,12 @@ class Account(object):
         from datetime import datetime as dt
 
         if self._check_db():
-            with open(self._logname, 'a+') as fp:
-                fp.write('{0:<15},{1:<10},{2:<10},{3}\n'.format(
-                    self._log_type[log], value, self._read_balance(),dt.now()))
+            mode = 'a+'
         else:
-            with open(self._logname, 'w+') as fp:
-                fp.write('{0:<15},{1:<10},{2:<10},{3}\n'.format(
-                    self._log_type[log], value, self._read_balance(),dt.now()))
+            mode = 'w+'
+        with open(self._logname, mode) as fp:
+            fp.write('{0:<15},{1:<10},{2:<10},{3}\n'.format(
+                self._log_type[log], value, self._read_balance(),dt.now()))
 def isnumber(value):
     try:
         float(value)
