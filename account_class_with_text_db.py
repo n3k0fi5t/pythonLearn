@@ -13,10 +13,12 @@ class Account(object):
             raise ValueError
         self._name = name
         self._logname = self._name + '.txt'
+        # load balance
         if self._check_db():
             with open(self._logname, 'r+') as fp:
                 for line in fp:
                     pass
+                line = line.split(',')[-2].strip()
                 if isnumber(line):
                     print("Load account success.")
                     self._balance = float(line)
@@ -51,16 +53,23 @@ class Account(object):
     def inquiry(self, val=0):
         import os.path as op
         data = self._read_db()
-        print('Account history:\n\t{0:<15} {1:<10} {2}'.format('operation', 'value', 'timestamp'))
+        print('Account history:\n\t{0:<15} {1:<10} {2:<10} {3}'.format(
+            'operation', 'value', 'balance', 'timestamp'))
+        # only read last ten transactions
+        if len(data) > 10:
+            data = data[-10:]
+
+        """
         if len(data) >21:
             data = data[-21:-1:2]
         else:
             data = data[::2]
+        """
         for line in data:
             if len(line)< 5:
                 continue
             info = line.split(',')
-            print('\t{0:<15} {1:<10} {2}'.format(info[0], info[1], info[2]))
+            print('\t{0:<15} {1:<10} {2:<10} {3}'.format(info[0], info[1], info[2], info[3]))
 
         #self._log(2)
     def _account_info(self):
@@ -88,13 +97,12 @@ class Account(object):
 
         if self._check_db():
             with open(self._logname, 'a+') as fp:
-                fp.write('{0:<15},{1},{2}\n'.format(self._log_type[log], value, dt.now()))
-                fp.write("{0}\n".format(self._balance ))
+                fp.write('{0:<15},{1:<10},{2:<10},{3}\n'.format(
+                    self._log_type[log], value, self._read_balance(),dt.now()))
         else:
             with open(self._logname, 'w+') as fp:
-                fp.write('{0:<15},{1},{2}\n'.format(self._log_type[log], value, dt.now()))
-                fp.write("{0}\n".format(self._balance ))
-
+                fp.write('{0:<15},{1:<10},{2:<10},{3}\n'.format(
+                    self._log_type[log], value, self._read_balance(),dt.now()))
 def isnumber(value):
     try:
         float(value)
