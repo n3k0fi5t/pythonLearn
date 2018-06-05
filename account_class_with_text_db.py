@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+from os import path
 
 SUPPORT_OPERATER = ['withdraw', 'deposit', 'inquiry']
 
@@ -32,7 +33,6 @@ class Account(object):
         print("Operation Success!!\nYour balance: {0}".format(self._read_balance()))
 
     def inquiry(self, val=0):
-        import os.path as op
         data = self._read_db()
         print('Account history:\n\t{0:<15} {1:<10} {2:<10} {3}'.format(
             'operation', 'value', 'balance', 'timestamp'))
@@ -81,28 +81,31 @@ class Account(object):
 
     def _read_db(self):
         if self._check_db():
-            with open(self._logname, 'r+') as fp:
+            with open(self._db_path(), 'r+') as fp:
                 return fp.read().split('\n')[:-1]
 
     def _check_db(self):
-        import os.path as op
-        if op.exists(self._logname):
+        if path.exists(self._db_path()):
             self._hasdb = 1
         else:
             self._hasdb = 0
         return self._hasdb
 
     def _log(self, log, value=0):
-        import os.path as op
         from datetime import datetime as dt
-
         if self._check_db():
             mode = 'a+'
         else:
             mode = 'w+'
-        with open(self._logname, mode) as fp:
+        with open(self._db_path(), mode) as fp:
             fp.write('{0:<15},{1:<10},{2:<10},{3}\n'.format(
                 self._log_type[log], value, self._read_balance(),dt.now()))
+
+    def _db_path(self):
+        dir_name = path.dirname(__file__)
+        file_path = path.join(dir_name, self._logname)
+        return file_path
+
 def isnumber(value):
     try:
         float(value)
