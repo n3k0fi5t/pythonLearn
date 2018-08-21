@@ -150,59 +150,64 @@ def assert_and_help(parser, flag=True, describe=''):
         parser.print_usage()
         exit(-1)
 
-parser = create_pareser()
-args = parser.parse_args()
-if args.inquire is True:
-    inquire_function()
-    exit(1)
-else:
-    assert_and_help(parser, args.code in SUPPORT_CODE,
-            "Code is invalid, please re-input, use -i to inquired code")
-    assert_and_help(parser, isnumber(args.amount), "Must be a number")
-    assert_and_help(parser, float(args.amount) > 0,
-            "Exchange cash must larger than 0")
-    code = 'a_'+ args.code
+def main():
+    parser = create_pareser()
+    args = parser.parse_args()
+    if args.inquire is True:
+        inquire_function()
+        exit(1)
+    else:
+        assert_and_help(parser, args.code in SUPPORT_CODE,
+                "Code is invalid, please re-input, use -i to inquired code")
+        assert_and_help(parser, isnumber(args.amount), "Must be a number")
+        assert_and_help(parser, float(args.amount) > 0,
+                "Exchange cash must larger than 0")
+        code = 'a_'+ args.code
 
-src = get_source(URL, code)
+    # use selenium to get page source because of dynamicaly generated url
+    src = get_source(URL, code)
 
-# use bs to parse html
-bank_rate = {}
-code = BS(src, 'html.parser')
-for item in code.find_all('table')[1].find_all('tr'):
-    rate_list, bank_name = [], ''
-    for subitem in item.find_all('td'):
-        if subitem.attrs['class'][0] == 'bank':
-            bank_name = subitem.text.strip('\n')
-        elif subitem.attrs['class'][0] == 'WordB':
-            rate_list.append(subitem.text)
-        else:
-            pass
+    # use bs4 to parse html
+    bank_rate = {}
+    code = BS(src, 'html.parser')
+    for item in code.find_all('table')[1].find_all('tr'):
+        rate_list, bank_name = [], ''
+        for subitem in item.find_all('td'):
+            if subitem.attrs['class'][0] == 'bank':
+                bank_name = subitem.text.strip('\n')
+            elif subitem.attrs['class'][0] == 'WordB':
+                rate_list.append(subitem.text)
+            else:
+                pass
 
-    # drop invalid data
-    if rate_list is [] or bank_name == '':
-        continue
-    if bank_name not in bank_rate:
-        bank_rate[bank_name] = rate_list
+        # drop invalid data
+        if rate_list is [] or bank_name == '':
+            continue
+        if bank_name not in bank_rate:
+            bank_rate[bank_name] = rate_list
 
-# quantize jpy / consumeNTD
-bank_list = {}
+    # quantize jpy / consume NTD
+    bank_list = {}
 
-for k, v in bank_rate.items():
-    bank = BankExchange(k, v, float(args.amount))
-    bank_list[bank.name] = [bank.cp_value, bank]
+    for k, v in bank_rate.items():
+        bank = BankExchange(k, v, float(args.amount))
+        bank_list[bank.name] = [bank.cp_value, bank]
 
-# analysis
-cmp_result = sorted([[k, v[0]] for (k, v) in bank_list.items()],
-        key=lambda x:x[1], reverse=True)
+    # analysis
+    cmp_result = sorted([[k, v[0]] for (k, v) in bank_list.items()],
+            key=lambda x:x[1], reverse=True)
 
-tops = int(args.tops)
-assert isnumber(tops), ''
+    tops = int(args.tops)
+    assert isnumber(tops), ''
 
-ordinal_numbers = ['1st', '2nd', '3rd']
-for i in range(tops):
-    ordn = ordinal_numbers[i] if i < len(ordinal_numbers) else str(i+1)+'th'
-    assert len(bank_list) > i, ''
-    print("{0} is the {2} CP value in exchange with rate: {1:.4}"
-        .format(cmp_result[i][0], (1 / cmp_result[i][1]), ordn))
-    # display the bank info
-    bank_list[cmp_result[i][0]][1].disp_info()
+    ordinal_numbers = ['1st', '2nd', '3rd']
+    for i in range(tops):
+        ordn = ordinal_numbers[i] if i < len(ordinal_numbers) else str(i+1)+'th'
+        assert len(bank_list) > i, ''
+        print("{0} is the {2} CP value in exchange with rate: {1:.4}"
+            .format(cmp_result[i][0], (1 / cmp_result[i][1]), ordn))
+        # display the bank info
+        bank_list[cmp_result[i][0]][1].disp_info()
+
+if __name__ == '__main__':
+    main()
