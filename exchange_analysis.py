@@ -192,6 +192,7 @@ assert isnumber(tops), ''
 ordinal_numbers = ['1st', '2nd', '3rd']
 for i in range(tops):
     ordn = ordinal_numbers[i] if i < len(ordinal_numbers) else str(i+1)+'th'
+    assert len(bank_list) > i, ''
     print("{0} is the {2} CP value in exchange with rate: {1:.4}"
         .format(cmp_result[i][0], (1 / cmp_result[i][1]), ordn))
     # display the bank info
