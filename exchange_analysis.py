@@ -102,9 +102,9 @@ class BankExchange(object):
 def parse_arg():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a','--amount', nargs='?',
-            default=-1, metavar='Cash to exchange', required=True)
+            default=-1, metavar='Cash to exchange')
     parser.add_argument('-c', '--code', nargs='?', metavar='Country code',
-            default='', required=True)
+            default='')
     parser.add_argument('-i', '--inquire', action='store_true')
     parser.add_argument('-tops', nargs='?', metavar='top ? of max CP', default=1)
     return parser.parse_args()
