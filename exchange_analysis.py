@@ -106,6 +106,7 @@ def parse_arg():
     parser.add_argument('-c', '--code', nargs='?', metavar='Country code',
             default='', required=True)
     parser.add_argument('-i', '--inquire', action='store_true')
+    parser.add_argument('-tops', nargs='?', metavar='top ? of max CP', default=1)
     return parser.parse_args()
 
 def get_source(url, code):
@@ -178,14 +179,20 @@ for item in code.find_all('table')[1].find_all('tr'):
 bank_list = {}
 
 for k, v in bank_rate.items():
-    bank = BankExchange(k, v, AMOUNT)
+    bank = BankExchange(k, v, float(args.amount))
     bank_list[bank.name] = [bank.cp_value, bank]
 
 # analysis
 cmp_result = sorted([[k, v[0]] for (k, v) in bank_list.items()],
         key=lambda x:x[1], reverse=True)
 
-print("{0} has the highest CP value in exchange with rate: {1}"
-        .format(cmp_result[0][0], 1 / cmp_result[0][1]))
-# display the bank info
-bank_list[cmp_result[0][0]][1].disp_info()
+tops = int(args.tops)
+assert isnumber(tops), ''
+
+ordinal_numbers = ['1st', '2nd', '3rd']
+for i in range(tops):
+    ordn = ordinal_numbers[i] if i < len(ordinal_numbers) else str(i)+'th'
+    print("{0} is the {2} CP value in exchange with rate: {1:.4}"
+        .format(cmp_result[i][0], (1 / cmp_result[i][1]), ordn))
+    # display the bank info
+    bank_list[cmp_result[i][0]][1].disp_info()
