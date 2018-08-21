@@ -99,15 +99,15 @@ class BankExchange(object):
     def __call__(self):
         return self
 
-def parse_arg():
+def create_pareser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a','--amount', nargs='?',
-            default=-1, metavar='Cash to exchange')
-    parser.add_argument('-c', '--code', nargs='?', metavar='Country code',
+            default=-1, metavar='Cash to exchange (required)')
+    parser.add_argument('-c', '--code', nargs='?', metavar='Country code (required)',
             default='')
     parser.add_argument('-i', '--inquire', action='store_true')
     parser.add_argument('-tops', nargs='?', metavar='top ? of max CP', default=1)
-    return parser.parse_args()
+    return parser
 
 def get_source(url, code):
     from selenium import webdriver
@@ -132,7 +132,7 @@ def get_source(url, code):
     print('\tclose driver')
     return src
 
-def help_function():
+def inquire_function():
     for (k, v) in HELP_DOC.items():
         print('Money name: {0:}\t code: {1}'.format(v, k))
 
@@ -144,14 +144,23 @@ def isnumber(val):
     except:
         return False
 
-args = parse_arg()
+def assert_and_help(parser, flag=True, describe=''):
+    if flag is False:
+        print(describe)
+        parser.print_usage()
+        exit(-1)
+
+parser = create_pareser()
+args = parser.parse_args()
 if args.inquire is True:
-    help_function()
+    inquire_function()
     exit(1)
 else:
-    assert args.code in SUPPORT_CODE, "Code is invalid, please re-input, use -i to inquired code"
-    assert isnumber(args.amount), "Must be a number"
-    assert float(args.amount) > 0, "Exchange cash must larger than 0"
+    assert_and_help(parser, args.code in SUPPORT_CODE,
+            "Code is invalid, please re-input, use -i to inquired code")
+    assert_and_help(parser, isnumber(args.amount), "Must be a number")
+    assert_and_help(parser, float(args.amount) > 0,
+            "Exchange cash must larger than 0")
     code = 'a_'+ args.code
 
 src = get_source(URL, code)
