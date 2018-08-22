@@ -14,7 +14,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup as bs
 
 
-SEARCH_STRING = ""
+SEARCH_STRING = "default"
 WAIT_INTERVAL = 7
 SCROLL_PAUSE_TIME = 0.2
 THREAD_LIMIT = 3
@@ -133,18 +133,22 @@ def main(search_string=SEARCH_STRING):
     res = []
     threads = []
 
-    driver = webdriver.Chrome()
+    options = webdriver.ChromeOptions()
+    options.add_argument('--ignore-certificate-errors')
+    options.add_argument("--test-type")
+    driver = webdriver.Chrome(chrome_options=options)
     driver.get("https://www.google.com.tw/maps")
 
     # wait for loading
     ele = WebDriverWait(driver, 3).until(
-        EC.presence_of_element_located((By.NAME, "q")))
+        EC.presence_of_element_located((By.ID, "searchboxinput")))
 
-    searchbox = driver.find_element_by_name('q')
+    searchbox = driver.find_element_by_id('searchboxinput')
+    print(searchbox.get_attribute("type"))
+    print(searchbox.text)
 
     searchbox.clear()
     searchbox.send_keys(search_string)
-
     """
         this two line of code is equal to ```searchbox.send_keys(Keys.RETURN)```
     """

@@ -1,17 +1,21 @@
 #!/usr/bin/env python
+# built-in modules
 import requests
 import math
 from sys import exit
+
 import re
 from bs4 import BeautifulSoup as BS
 import argparse
 
 URL = 'http://www.findrate.tw/'
+
 SUPPORT_CODE = ['jpy', 'usd', 'cny', 'eur', 'hkd', 'gbp',
         'aud', 'cad', 'sgd', 'chf', 'zar', 'sek', 'thb',
         'php', 'idr', 'krw', 'vnd', 'myr', 'inr', 'dkk',
         'nzd', 'mop', 'mxn', 'try'
         ]
+
 HELP_DOC = {'jpy':'日幣', 'usd':'美金', 'cny':'人民幣',
         'eur':'歐元', 'hkd':'港幣', 'gbp':'英鎊',
         'aud':'澳幣', 'cad':'澳幣', 'sgd':'新加坡幣',
@@ -20,6 +24,8 @@ HELP_DOC = {'jpy':'日幣', 'usd':'美金', 'cny':'人民幣',
         'krw':'韓元', 'vnd':'越南盾', 'myr':'馬來幣',
         'inr':'印度披索', 'dkk':'丹麥幣','nzd':'紐元',
         'mop':'澳門幣', 'mxn':'墨西哥比索', 'try':'土耳其里拉'}
+
+ORDINAL_NUMBERS = ['1st', '2nd', '3rd']
 
 class BankExchange(object):
     def __init__(self, bank_name, attrs=[], amount=0):
@@ -35,7 +41,11 @@ class BankExchange(object):
         self._parseAttrs()
         self.calculate()
 
+    def __call__(self):
+        return self
+
     def _parseAttrs(self):
+        # assgin a very high value to not sold bank
         if self._attrs[1] == '--':
             self.cash_sell = 1e9
         else:
@@ -50,6 +60,7 @@ class BankExchange(object):
             if '免手續費' in dcb or 'ATM免收' in dcb or '本行賣免收' in dcb:
                 self.fee = 0
                 continue
+
             # pasring number
             r = re.search('[-+]?\d*\.\d+|\d+', dcb)
             if r:
@@ -90,14 +101,13 @@ class BankExchange(object):
 """.format(self.name, self.cash_sell, self.time, self.fee, self.amount,
     self._pot, self._lowest, self.fee_describes
 ))
+
     def setAmount(self, amount):
         self.amount = amount
 
     def calculate(self):
+        # quantize by jpy / consume NTD
         self.cp_value = 1 / self.cash_sell * self.amount / (self.amount + self.fee)
-
-    def __call__(self):
-        return self
 
 def create_pareser():
     parser = argparse.ArgumentParser()
@@ -106,7 +116,7 @@ def create_pareser():
     parser.add_argument('-c', '--code', nargs='?', metavar='Country code (required)',
             default='')
     parser.add_argument('-i', '--inquire', action='store_true')
-    parser.add_argument('-tops', nargs='?', metavar='top ? of max CP', default=1)
+    parser.add_argument('-tops', nargs='?', default=1, metavar="top X of max CP, X is integer")
     return parser
 
 def get_source(url, code):
@@ -137,9 +147,9 @@ def inquire_function():
         print('Money name: {0:}\t code: {1}'.format(v, k))
 
 # util
-def isnumber(val):
+def isnumber(val, ntype=float):
     try:
-        float(val)
+        ntype(val)
         return True
     except:
         return False
@@ -150,6 +160,7 @@ def assert_and_help(parser, flag=True, describe=''):
         parser.print_usage()
         exit(-1)
 
+# main
 def main():
     parser = create_pareser()
     args = parser.parse_args()
@@ -162,6 +173,11 @@ def main():
         assert_and_help(parser, isnumber(args.amount), "Must be a number")
         assert_and_help(parser, float(args.amount) > 0,
                 "Exchange cash must larger than 0")
+        assert_and_help(parser, isnumber(args.tops, ntype=int),
+                "Tops must be an integer")
+
+        # assign value
+        tops = int(args.tops)
         code = 'a_'+ args.code
 
     # use selenium to get page source because of dynamicaly generated url
@@ -186,28 +202,23 @@ def main():
         if bank_name not in bank_rate:
             bank_rate[bank_name] = rate_list
 
-    # quantize jpy / consume NTD
     bank_list = {}
 
     for k, v in bank_rate.items():
         bank = BankExchange(k, v, float(args.amount))
-        bank_list[bank.name] = [bank.cp_value, bank]
+        bank_list[bank.name] = bank
 
-    # analysis
-    cmp_result = sorted([[k, v[0]] for (k, v) in bank_list.items()],
-            key=lambda x:x[1], reverse=True)
+    # sort
+    cmp_result = sorted([v for (k, v) in bank_list.items()],
+            key=lambda x:x.cp_value, reverse=True)
 
-    tops = int(args.tops)
-    assert isnumber(tops), ''
-
-    ordinal_numbers = ['1st', '2nd', '3rd']
     for i in range(tops):
-        ordn = ordinal_numbers[i] if i < len(ordinal_numbers) else str(i+1)+'th'
+        ordn = ORDINAL_NUMBERS[i] if i < len(ORDINAL_NUMBERS) else str(i + 1) + 'th'
         assert len(bank_list) > i, ''
         print("{0} is the {2} CP value in exchange with rate: {1:.4}"
-            .format(cmp_result[i][0], (1 / cmp_result[i][1]), ordn))
+            .format(cmp_result[i].name, (1 / cmp_result[i].cp_value), ordn))
         # display the bank info
-        bank_list[cmp_result[i][0]][1].disp_info()
+        cmp_result[i].disp_info()
 
 if __name__ == '__main__':
     main()
