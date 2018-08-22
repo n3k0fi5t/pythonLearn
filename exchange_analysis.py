@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # built-in modules
-import requests
 import math
 from sys import exit
 
 import re
-from bs4 import BeautifulSoup as BS
+import requests
 import argparse
+from bs4 import BeautifulSoup as BS
 
 URL = 'http://www.findrate.tw/'
 
@@ -28,13 +28,15 @@ HELP_DOC = {'jpy':'日幣', 'usd':'美金', 'cny':'人民幣',
 ORDINAL_NUMBERS = ['1st', '2nd', '3rd']
 
 class BankExchange(object):
+    """doc of BankExchange"""
+
     def __init__(self, bank_name, attrs=[], amount=0):
         super(BankExchange, self).__init__()
         self._attrs = attrs
         self._pot = 0
         self._lowest = 0
-        self.name = bank_name
         self.fee = 0
+        self.name = bank_name
         self.amount = amount
 
         # start to parse attributes
@@ -45,6 +47,7 @@ class BankExchange(object):
         return self
 
     def _parseAttrs(self):
+        assert len(self._attrs) == 6, 'length error of bank data'
         # assgin a very high value to not sold bank
         if self._attrs[1] == '--':
             self.cash_sell = 1e9
@@ -113,7 +116,7 @@ def create_pareser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-a','--amount', nargs='?',
             default=-1, metavar='Cash to exchange (required)')
-    parser.add_argument('-c', '--code', nargs='?', metavar='Country code (required)',
+    parser.add_argument('-c', '--code', nargs='?', metavar='Currency code (required)',
             default='')
     parser.add_argument('-i', '--inquire', action='store_true')
     parser.add_argument('-tops', nargs='?', default=1, metavar="top X of max CP, X is integer")
@@ -131,11 +134,12 @@ def get_source(url, code):
     print("\tfind button")
     driver.get(URL)
     ele = driver.find_elements_by_class_name(code)
-    ele[0].click()
     print("\tclick button")
-    sleep(wait_time)
-
+    assert len(ele) > 0, 'unknown error, button must be found'
+    ele[0].click()
     print("\tget page source")
+    sleep(wait_time) # wait for page
+
     src = driver.page_source
     driver.close()
     driver.quit()
@@ -146,7 +150,7 @@ def inquire_function():
     for (k, v) in HELP_DOC.items():
         print('Money name: {0:}\t code: {1}'.format(v, k))
 
-# util
+# utils
 def isnumber(val, ntype=float):
     try:
         ntype(val)
@@ -178,7 +182,7 @@ def main():
 
         # assign value
         tops = int(args.tops)
-        code = 'a_'+ args.code
+        code = 'a_' + args.code
 
     # use selenium to get page source because of dynamicaly generated url
     src = get_source(URL, code)
