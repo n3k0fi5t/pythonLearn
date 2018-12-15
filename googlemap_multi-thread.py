@@ -15,15 +15,16 @@ from bs4 import BeautifulSoup as bs
 
 
 SEARCH_STRING = "default"
-WAIT_INTERVAL = 25
+WAIT_INTERVAL = 7
 SCROLL_PAUSE_TIME = 0.2
-THREAD_LIMIT = 3
+THREAD_LIMIT = 2
 
 XPATH = {
     'store': "//*[@id='pane']/div/div[2]/div/div/div[1]/div[1]/button[1]",
     'search': "//*[@id='pane']/div/div[2]/div/div/button/jsl/jsl[7]",
-    'comments': "//*[@id='pane']/div/div[2]/div/div/div[1]/div[3]/div[2]/div/div[1]/span[3]/ul/li/span",
-    'scroll_down': "//*[@id='pane']/div/div[2]/div/div/div[2]/div[8]",
+    #'comments': "//*[@id='pane']/div/div[2]/div/div/div[1]/div[3]/div[2]/div/div[1]/span[3]/ul/li/span",
+    'comments':"//*[@id='pane']/div/div[1]/div/div/div[1]/div[3]/div[2]/div/div[1]/span[3]/ul/li/span[2]/span[1]/button",
+    'scroll_down': "//*[@id='pane']/div/div[1]/div/div/div[2]/div[6]/div/div",
     'store_name': "//*[@id='pane']/div/div[2]/div/div/div[1]/div[3]/div[1]"
 }
 
@@ -36,22 +37,20 @@ def back(driver, xpath):
 
 def scroll_down(driver):
     # find all comments
-    #element = driver.find_element_by_xpath(XPATH['scroll_down'])
-    #element = driver.find_element_by_class_name('section-reviewchart-numreviews')
+    element = driver.find_element_by_xpath(XPATH['scroll_down'])
+    element.click() # use click to focus the position
+
+    action = ActionChains(driver)
 
     while(1):
         src = driver.page_source
-        """
         for i in range(10):
-            element.send_keys(Keys.SPACE)
+            action.send_keys(Keys.SPACE).perform()
             sleep(SCROLL_PAUSE_TIME)
-        """
-        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
         # src not update anymore imply down to the last comment
         if len(src) == len(driver.page_source):
             break
-
 
 def get_comments(src):
     # list all comments

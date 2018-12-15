@@ -8,6 +8,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.touch_actions import TouchActions
 from bs4 import BeautifulSoup as bs
 from time import sleep
 
@@ -19,8 +20,8 @@ SCROLL_PAUSE_TIME = 0.15
 XPATH = {
     'store' : "//*[@id='pane']/div/div[2]/div/div/div[1]/div[1]/button[1]",
     'search' : "//*[@id='pane']/div/div[2]/div/div/button/jsl/jsl[7]",
-    'comments' : "//*[@id='pane']/div/div[2]/div/div/div[1]/div[3]/div[2]/div/div[1]/span[3]/ul/li/span",
-    'scroll_down' : "//*[@id='pane']/div/div[2]/div/div/div[2]/div[8]",
+    'comments' : "//*[@id='pane']/div/div[1]/div/div/div[1]/div[3]/div[2]/div/div[1]/span[3]/ul/li/span[2]/span[1]/button",
+    'scroll_down' : '//*[@id="pane"]/div/div[1]/div/div/div[2]/div[6]/div/div',
     'store_name' : "//*[@id='pane']/div/div[2]/div/div/div[1]/div[3]/div[1]"
 }
 
@@ -32,15 +33,21 @@ def back(driver, xpath):
 def scroll_down(driver):
     # find all comments
     element = driver.find_element_by_xpath(XPATH['scroll_down'])
-    
+    #element = driver.find_element_by_class_name('section-reviewchart-numreviews')
+    element.click()
+    actions = ActionChains(driver)
+
     while(1):
         src = driver.page_source
         for i in range(10):
-            element.send_keys(Keys.SPACE)
+            #element.send_keys(Keys.SPACE)
+            actions.send_keys(Keys.SPACE).perform()
             sleep(SCROLL_PAUSE_TIME)
+
         sleep(WAIT_INTERVAL)
         if src == driver.page_source:
-            break    
+            break
+    print('comment end')
 
 def get_comments(src):
     # list all comments
@@ -48,7 +55,7 @@ def get_comments(src):
     cmts = []
     for (idx,item) in enumerate(code.findAll(attrs={'class':'section-review-text'})):
         # only save valid comment
-        if len(item.text) > 0: 
+        if len(item.text) > 0:
             cmts.append("    {0}".format(item.text))
     return cmts
 
