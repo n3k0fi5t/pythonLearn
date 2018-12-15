@@ -40,12 +40,10 @@ to update functions in the module scope
   - [CommentSearcher](https://github.com/n3k0fi5t/pythonLearn/blob/master/googlemap.py)
 
     [video](https://www.youtube.com/watch?v=S_FoFEcidPk)
-    {%youtube S_FoFEcidPk %}
 
   - [CommentSearcher-multi-thread ver](https://github.com/n3k0fi5t/pythonLearn/blob/master/googlemap_multi-thread.py)
 
     [video](https://www.youtube.com/watch?v=8z35_sE7B2E)
-    {%youtube 8z35_sE7B2E %}
 
 ---
 
