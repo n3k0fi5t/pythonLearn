@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup as bs
 
 
 SEARCH_STRING = "default"
-WAIT_INTERVAL = 7
+WAIT_INTERVAL = 25
 SCROLL_PAUSE_TIME = 0.2
 THREAD_LIMIT = 3
 
@@ -36,13 +36,17 @@ def back(driver, xpath):
 
 def scroll_down(driver):
     # find all comments
-    element = driver.find_element_by_xpath(XPATH['scroll_down'])
+    #element = driver.find_element_by_xpath(XPATH['scroll_down'])
+    #element = driver.find_element_by_class_name('section-reviewchart-numreviews')
 
     while(1):
         src = driver.page_source
+        """
         for i in range(10):
             element.send_keys(Keys.SPACE)
             sleep(SCROLL_PAUSE_TIME)
+        """
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
         # src not update anymore imply down to the last comment
         if len(src) == len(driver.page_source):
@@ -63,6 +67,7 @@ def get_comments(src):
 def perform_comment(driver, res, search=True, store_name="", result_name=None):
     store_name = '  '.join(store_name.split('\n'))
     comment = driver.find_element_by_xpath(XPATH['comments'])
+    #comment = driver.find_element_by_class_name('widget-pane-link')
     comment.click()
     sleep(WAIT_INTERVAL)
 
@@ -109,6 +114,8 @@ def crawl_handler(res, idx, search_string):
 
     searchbox.clear()
     searchbox.send_keys(search_string)
+
+    print("searching idx: %d"%idx)
 
     """
         this two line of code is equal to ```searchbox.send_keys(Keys.RETURN)```
@@ -181,6 +188,7 @@ def main(search_string=SEARCH_STRING):
         comment = None
         try:
             comment = driver.find_element_by_xpath(XPATH['comments'])
+            #comment = driver.find_element_by_class_name('widget-pane-link')
         except:
             driver.close()
             print("Not find any of {}".format(search_string))
