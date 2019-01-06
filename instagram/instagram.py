@@ -131,8 +131,8 @@ def fetch_timeline_feed(api, saved=False ,next_max_id='', record_count=0):
                 # drop invalid item
                 pass
             save_image(img_ss, _, saved=saved)
-            sleep(0.5, normal=True)
-        sleep(3)
+            sleep(DISPLAY_DELAY, normal=True)
+        sleep(FETCH_DELAY)
 
 def main():
     api = login()
