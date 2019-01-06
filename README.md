@@ -9,7 +9,9 @@
 - [**Some small projects**](#projects)
 > 1. [chat server and client](#tcp)
 
-> 2. [ptt crawler](#crawler)
+> 2. [ptt crawler](#ptt_crawler)
+
+> 3. [instagram crawler](#instagram_crawler)
 
 
 - [**technique**](#technique)
@@ -70,7 +72,7 @@ to listen the connection.
 
     crawle a specify account posts in hot topics/given topic
 
-[instagram_crawler](https://github.com/n3k0fi5t/pythonLearn/blob/master/instagram/instagram.py)
+#### [instagram_crawler](https://github.com/n3k0fi5t/pythonLearn/blob/master/instagram/instagram.py)
 ![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/instagram_demo.png)
 - Base on [instagram private API](https://github.com/ping/instagram_private_api)
 
