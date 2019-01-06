@@ -80,12 +80,9 @@ def generate_header(api, headers=None):
 def login():
     api = None
     while api is None:
-        """
         usr, pwd = None, None
         usr = input("User name: ")
         pwd = getpass.getpass("Password")
-        """
-        usr, pwd = 'mengting52401', '121248947'
 
         try:
             api = Client(usr, pwd, auto_patch=True)
