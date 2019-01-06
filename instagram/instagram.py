@@ -127,10 +127,10 @@ def fetch_timeline_feed(api, saved=False ,next_max_id='', record_count=0):
             try:
                 display_info(_)
                 print("#" * 50)
+                save_image(img_ss, _, saved=saved)
             except:
                 # drop invalid item
                 pass
-            save_image(img_ss, _, saved=saved)
             sleep(DISPLAY_DELAY, normal=True)
         sleep(FETCH_DELAY)
 
