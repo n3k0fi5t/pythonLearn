@@ -6,6 +6,7 @@ import requests
 import getpass
 import hashlib
 import tqdm
+import argparse
 
 # import API
 from instagram_private_api import Client
@@ -135,8 +136,12 @@ def fetch_timeline_feed(api, saved=False ,next_max_id='', record_count=0):
         sleep(FETCH_DELAY)
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--saved', action='store_true', \
+             default=False, help='Save images or not')
+
     api = login()
-    saved = True
+    saved = parser.parse_args().saved
     if saved:
         if not os.path.exists('images'):
             os.makedirs('images')
