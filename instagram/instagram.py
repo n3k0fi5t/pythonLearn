@@ -88,7 +88,7 @@ def login():
 
     return api
 
-def fetch_timeline_feed(api, saved=False ,next_max_id='', record_count=0):
+def fetch_timeline_feed(api, saved=False, once=False ,next_max_id='', record_count=0):
     def save_image(ss, item, saved=False):
         if not saved:
             return
@@ -132,23 +132,30 @@ def fetch_timeline_feed(api, saved=False ,next_max_id='', record_count=0):
             except:
                 # drop invalid item
                 pass
-            sleep(DISPLAY_DELAY, normal=True)
+            if once:
+                input()
+            else:
+                sleep(DISPLAY_DELAY, normal=True)
         sleep(FETCH_DELAY)
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--saved', action='store_true', \
              default=False, help='Save images or not')
+    parser.add_argument('-o', '--once', action='store_true', \
+             default=False, help='Display one post at a time')
 
     api = login()
-    saved = parser.parse_args().saved
+    args = parser.parse_args()
+    saved, once = args.saved, args.once
+
     if saved:
         if not os.path.exists('images'):
             os.makedirs('images')
         else:
             remove_images()
 
-    fetch_timeline_feed(api, saved=saved)
+    fetch_timeline_feed(api, saved=saved, once=once)
 
 if __name__ == '__main__':
     main()
