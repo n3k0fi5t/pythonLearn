@@ -14,8 +14,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup as bs
 
 
-SEARCH_STRING = "default"
-WAIT_INTERVAL = 7
+SEARCH_STRING = "牛角"
+WAIT_INTERVAL = 25
 SCROLL_PAUSE_TIME = 0.2
 THREAD_LIMIT = 2
 
@@ -175,8 +175,11 @@ def main(search_string=SEARCH_STRING):
                               name="crawl thread_{0}".format(i))
         searchthread.setDaemon(1)
         threads.append(searchthread)
-        searchthread.start()
-        print("crawling thread_{0}  start".format(i))
+        try:
+            searchthread.start()
+            print("crawling thread_{0}  start".format(i))
+        except:
+            searchthread.exit()
 
         # limited total crawling threads
         while sum([1 if thread.isAlive() else 0 for thread in threads]) >= THREAD_LIMIT:

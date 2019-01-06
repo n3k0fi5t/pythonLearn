@@ -88,7 +88,7 @@ def login():
 
     return api
 
-def fetch_timeline_feed(api, saved=False, once=False ,next_max_id='', record_count=0):
+def fetch_timeline_feed(api, saved=False, once=False, next_max_id='', record_count=0):
     def save_image(ss, item, saved=False):
         if not saved:
             return
