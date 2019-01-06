@@ -64,7 +64,7 @@ to listen the connection.
 ![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/crawler.png)
 - A ptt crawler crawle the web side ptt context.
 
-    Functionality
+  Functionality:
 
     crawle a specify account push comments in hot topics/given topic
 
@@ -74,5 +74,5 @@ to listen the connection.
 ![image](https://github.com/n3k0fi5t/pythonLearn/blob/master/sample_picture/instagram_demo.png)
 - [Base on instagram private api](https://github.com/ping/instagram_private_api)
 
-    Emulate a simple instagram application
+  Emulate a simple instagram application
 
