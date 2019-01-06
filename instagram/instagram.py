@@ -33,7 +33,7 @@ Likes: {2}
         item['like_count']
     ))
 
-def sleep(delay, normal=False, desc='Fetching for early posts'):
+def sleep(delay, normal=False, desc='Fetching earlier posts'):
     from time import sleep as slp
     from tqdm import trange
     if normal:
