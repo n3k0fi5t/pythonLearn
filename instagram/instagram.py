@@ -4,14 +4,11 @@ import json
 import os
 import requests
 import getpass
-import hashlib
 import argparse
 import numpy
-from io import BytesIO
 
 # third party module
 from PIL import Image
-import tqdm
 import cv2
 
 # import API
@@ -19,8 +16,9 @@ from instagram_private_api import Client
 
 FETCH_DELAY = 3
 DISPLAY_DELAY = 0.5
+ALLOW_VARS = ['saved', 'content', 'once']
 
-# util
+# utils
 def display_info(item):
     print(
 """
@@ -53,7 +51,6 @@ def remove_images():
     for fn in os.listdir('./images/'):
         os.remove('./images/' + fn)
 
-
 def generate_header(api, headers=None):
     """
     generate header for session to fetch images because of limited API
@@ -77,6 +74,17 @@ def generate_header(api, headers=None):
             })
     return headers
 
+def create_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s', '--saved', action='store_true', \
+             default=False, help='Save images or not')
+    parser.add_argument('-o', '--once', action='store_true', \
+             default=False, help='Display one post at a time')
+    parser.add_argument('-c', '--content', action='store_true', \
+            default=False, help='Display with or without image, only support in once mode')
+    return parser
+
+#main functions
 def login():
     api = None
     while api is None:
@@ -96,11 +104,15 @@ def login():
 
 def fetch_timeline_feed(api, **kwargs):
     def read_image(ss, item):
+        from io import BytesIO
+
         resp = ss.get(item['images']['standard_resolution']['url'])
         img = Image.open(BytesIO(resp.content))
         return img
 
     def save_image(item=None, img=None):
+        import hashlib
+
         if img is None or item is None:
             return
 
@@ -124,9 +136,8 @@ def fetch_timeline_feed(api, **kwargs):
     # preprocess arguments and initialize variables
     saved = kwargs.pop('saved', False)
     once = kwargs.pop('once', False)
-    content = kwargs.pop('content', False)
+    content = kwargs.pop('content', False) if once else False
     next_max_id = ''
-
 
     if saved or content:
         # create session for fetching images
@@ -138,6 +149,16 @@ def fetch_timeline_feed(api, **kwargs):
         if content:
             cv2.namedWindow('Fetched image', cv2.WINDOW_NORMAL)
 
+    if saved:
+        try:
+            if not os.path.exists('images'):
+                os.makedirs('images')
+            else:
+                remove_images()
+        except:
+            # Fail to remove images or create dir
+            raise()
+    # Start fetching
     while True:
         try:
             if next_max_id != '':
@@ -154,17 +175,17 @@ def fetch_timeline_feed(api, **kwargs):
         # timeline items
         items = [item.get('media_or_ad') for item in results.get('feed_items', []) if item.get('media_or_ad')]
 
-        for _ in items:
+        for item in items:
             try:
-                display_info(_)
+                display_info(item)
                 print("#" * 50)
                 if content or saved:
-                    img = read_image(img_ss, _)
+                    img = read_image(img_ss, item)
                 else:
                     img = None
 
                 if saved:
-                    save_image(item=_, img=img)
+                    save_image(item=item, img=img)
 
                 if content:
                     cv_img = cv2.cvtColor(numpy.array(img), cv2.COLOR_RGB2BGR)
@@ -180,27 +201,9 @@ def fetch_timeline_feed(api, **kwargs):
         sleep(FETCH_DELAY)
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--saved', action='store_true', \
-             default=False, help='Save images or not')
-    parser.add_argument('-o', '--once', action='store_true', \
-             default=False, help='Display one post at a time')
-    parser.add_argument('-c', '--content-only', action='store_true', \
-            default=False, help='Display with or without image, only support in once mode')
-
+    args = create_parser().parse_args()
     api = login()
-    args = parser.parse_args()
-    saved, once = args.saved, args.once
-    content = args.content_only if once else False
-
-
-    if saved:
-        if not os.path.exists('images'):
-            os.makedirs('images')
-        else:
-            remove_images()
-
-    fetch_timeline_feed(api, saved=saved, once=once, content=content)
+    fetch_timeline_feed(api, **{key: getattr(args, key, False) for key in ALLOW_VARS})
 
 if __name__ == '__main__':
     main()
